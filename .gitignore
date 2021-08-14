@@ -1,2 +1,3 @@
-.smx
-.inc
+*.smx
+*.inc
+spcomp*
