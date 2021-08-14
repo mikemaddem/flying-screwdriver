@@ -88,18 +88,31 @@ methodmap DiscordBot < StringMap {
 		Handle channels = this.GetListeningChannels();
 		if(channels == null) return;
 		
+		static char tempID[32];
+		
 		for(int i = 0; i < json_array_size(channels); i++) {
 			DiscordChannel tempChannel = view_as<DiscordChannel>(json_array_get(channels, i));
-			static char tempID[32];
 			tempChannel.GetID(tempID, sizeof(tempID));
 			if(StrEqual(id, tempID, false)) {
 				json_array_remove(channels, i);
 				i--;
-				delete tempChannel;
 			}
+			delete tempChannel;
 		}
 		delete channels;
 	}
+	
+	public void StopListeningToChannels()
+	{
+		Handle channels = this.GetListeningChannels();
+		if(channels == null) return;
+		for(int i = 0; i < json_array_size(channels); i++)
+		{
+			json_array_remove(channels, i);
+		}
+		delete channels;
+	}
+
 	
 	/**
 	 * Stops the bot from listening to that channel id for messages
@@ -116,8 +129,8 @@ methodmap DiscordBot < StringMap {
 			if(StrEqual(id, tempID, false)) {
 				json_array_remove(channels, i);
 				i--;
-				delete tempChannel;
 			}
+			delete tempChannel;
 		}
 		delete channels;
 	}
@@ -155,6 +168,7 @@ methodmap DiscordBot < StringMap {
 		}
 		
 		json_array_append(channels, Channel);
+		delete channels;
 		
 		//Handle fForward = CreateForward(ET_Ignore, Param_Cell, Param_Cell, Param_String, Param_String, Param_String, Param_String, Param_String, Param_Cell);
 		//AddToForward(fForward, GetMyHandle(), callback);
